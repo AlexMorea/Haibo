@@ -251,6 +251,24 @@ class PageTests(TestCase):
         self.assertContains(r, "Upload an MP4")
 
 
+class StaticAssetTests(TestCase):
+    def test_every_static_reference_in_templates_exists(self):
+        import re
+        from pathlib import Path
+
+        from django.contrib.staticfiles import finders
+
+        templates = Path(settings.BASE_DIR, "templates").rglob("*.html")
+        refs = {
+            ref
+            for t in templates
+            for ref in re.findall(r"{% static '([^']+)' %}", t.read_text())
+        }
+        self.assertTrue(refs)
+        for ref in refs:
+            self.assertIsNotNone(finders.find(ref), ref)
+
+
 class RandsFilterTests(TestCase):
     def test_format(self):
         self.assertEqual(rands(123456), "R1 234.56")
