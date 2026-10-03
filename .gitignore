@@ -1,0 +1,6 @@
+haibo.sqlite3
+media/
+staticfiles/
+__pycache__/
+*.py[cod]
+.env
